@@ -66,7 +66,7 @@ return [
         'driver' => 'mysql',
         'host' => '127.0.0.1',
         'port' => '3306',
-        'database' => 'simulacion_ucsc_db', // <-- ¡Apunta a la nueva BD!
+        'database' => 'simulacion_ucsc_db', 
         'username' => 'root',
         'password' => '',
         'unix_socket' => '',
