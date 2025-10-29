@@ -4,6 +4,7 @@ namespace Database\Seeders;
 
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
+use App\Models\SimProfesor; // Importamos el Modelo
 
 class SimProfesorSeeder extends Seeder
 {
@@ -12,6 +13,6 @@ class SimProfesorSeeder extends Seeder
      */
     public function run(): void
     {
-        //
+        SimProfesor::factory()->count(30)->create();
     }
 }
