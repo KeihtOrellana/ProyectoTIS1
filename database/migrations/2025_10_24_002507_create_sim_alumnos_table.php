@@ -14,7 +14,6 @@ return new class extends Migration
         Schema::connection('mysql_simulacion')->create('sim_alumnos', function (Blueprint $table) {
         $table->integer('rut')->unsigned()->primary();
         $table->string('nombre', 100);
-        $table->string('semestre_inscrito', 6);
         $table->timestamps();
     });
 

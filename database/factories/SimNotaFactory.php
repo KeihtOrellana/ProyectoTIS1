@@ -18,6 +18,7 @@ class SimNotaFactory extends Factory
     {
         return [
         'rut_alumno' => 0, // Lo pondremos en el Seeder
+        'semestre_inscrito'   => fake()->numberBetween(2024, 2046) . "-" . fake()->randomElement([1, 2]),
         'nota_final' => fake()->randomFloat(1, 4.0, 7.0),
         'fecha_nota' => fake()->dateTimeBetween('-1 year', 'now'),
         'created_at' => now(),

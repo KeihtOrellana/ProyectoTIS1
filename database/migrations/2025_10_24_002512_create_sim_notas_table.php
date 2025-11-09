@@ -13,7 +13,8 @@ return new class extends Migration
     {
         Schema::connection('mysql_simulacion')->create('sim_notas', function (Blueprint $table) {
         $table->id();
-        $table->integer('rut_alumno')->unsigned();
+        $table->integer('rut_alumno');
+        $table->string('semestre_inscrito', 6);
         $table->decimal('nota_final', 2, 1)->nullable();
         $table->date('fecha_nota')->nullable();
         $table->timestamps();

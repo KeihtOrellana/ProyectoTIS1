@@ -19,7 +19,6 @@ class SimAlumnoFactory extends Factory
         return [
         'rut' => fake()->unique()->numberBetween(10000000, 25000000),
         'nombre' => fake()->name(),
-        'semestre_inscrito' => fake()->randomElement(['2024-1', '2024-2', '2025-1', '2025-2']),
         'created_at' => now(),
         'updated_at' => now(),
     ];

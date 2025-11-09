@@ -21,7 +21,7 @@ class SimProfesorFactory extends Factory
     {
     return [
         'rut' => fake()->unique()->numberBetween(7000000, 12000000),
-        'nombre' => "Prof. " . fake()->firstName() . " " . fake()->lastName(),
+        'nombre' => fake()->firstName() . " " . fake()->lastName(),
         'created_at' => now(),
         'updated_at' => now(),
     ];
