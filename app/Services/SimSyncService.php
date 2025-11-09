@@ -23,13 +23,13 @@ class SimSyncService
                 $rows = [];
 
                 foreach ($chunk as $a) {
-                    // Mapea a las CLAVES que espera validarProfesor
+                    // Mapea a las CLAVES que espera el validador
                     $payload = [
-                        'RUT_Profesor'    => (int) $a->rut,
-                        'Nombre_Profesor' => (string) $a->nombre,
+                        'RUT_Alumno'    => (int) $a->rut,
+                        'Nombre_Alumno' => (string) $a->nombre,
                     ];
 
-                    $val = \App\Support\HabilProfValidator::validarProfesor($payload);
+                    $val = \App\Support\HabilProfValidator::validarAlumno($payload);
                     if (!$val['ok']) {
                         Log::warning('[SYNC][ALUMNO] inválido', [
                             'rut' => $a->rut,
@@ -90,13 +90,13 @@ class SimSyncService
                         Log::warning('[SYNC][PROF] inválido', ['rut' => $p->rut, 'errors' => $val['errors']]);
                         continue;
                     }
-
                     $rows[] = [
                         'rut_profesor'    => $p->rut,
                         'nombre_profesor' => $p->nombre,
                         'created_at'      => now(),
                         'updated_at'      => now(),
                     ];
+
                 }
 
                 if (!empty($rows)) {
