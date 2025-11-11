@@ -1,0 +1,51 @@
+:root {
+    --color-ingreso: #20c997;
+    --color-editar: #ffc107;
+    --color-listado: #aa85ed;
+    --color-titulo: #8B0000;
+}
+body {
+    background-color: #f4f4f4;
+    display: flex;
+    align-items: center;
+    min-height: 100vh;
+}
+/* La caja principal con el borde rojo */
+.custom-card {
+    border-top: 5px solid var(--color-titulo);
+    border-radius: 8px;
+}
+.custom-card-title {
+    color: var(--color-titulo);
+    font-weight: 600;
+    font-size: 28px;
+}
+/* Botones de menú personalizados */
+.menu-button {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 25px 20px;
+    border-radius: 20px;
+    text-decoration: none;
+    color: white;
+    font-weight: 600;
+    height: 100%;
+    transition: transform 0.2s, box-shadow 0.2s;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+.menu-button:hover {
+    color: white;
+    transform: translateY(-5px);
+    box-shadow: 0 8px 15px rgba(0, 0, 0, 0.15);
+}
+.menu-button .icon-wrapper {
+    font-size: 2.5rem;
+    margin-bottom: 15px;
+}
+/* Asignar colores de las imágenes */
+#btn-ingreso { background-color: var(--color-ingreso); }
+#btn-editar { background-color: var(--color-editar); color: #333; }
+#btn-editar:hover { color: #333; }
+#btn-listado { background-color: var(--color-listado); }

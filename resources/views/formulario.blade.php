@@ -4,67 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Formulario de Habilitación Profesional</title>
+    <link rel="icon" href="{{ asset('logo.ico') }}">
+    <!-- Carga los estilos y scripts mejor y mas rapido -->
+    @vite(['resources/css/app.css', 'resources/js/app.js'])
 
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
-
-    <style>
-        :root {
-            --color-titulo: #8B0000;
-            --color-focus: #A52A2A;
-            --color-focus-shadow: rgba(139, 0, 0, 0.2);
-            --color-border: #D3BDBD;
-        }
-        body {
-            background-color: #f4f4f4;
-        }
-        .custom-card {
-            border-top: 5px solid var(--color-titulo);
-            border-radius: 8px;
-        }
-        .custom-card-title {
-            color: var(--color-titulo);
-            font-weight: 600;
-        }
-        .form-control, .form-select, .form-control:disabled, .form-control[readonly] {
-            border-color: var(--color-border);
-            background-color: #fff;
-        }
-        .form-control:focus, .form-select:focus {
-            border-color: var(--color-focus);
-            box-shadow: 0 0 5px var(--color-focus-shadow);
-        }
-        .form-control:disabled, .form-control[readonly] {
-             background-color: #f8f9fa; /* Color gris claro para campos deshabilitados */
-        }
-        .btn-custom-red {
-            background-color: var(--color-titulo);
-            border-color: var(--color-titulo);
-            color: white;
-            font-weight: 600;
-            padding: 10px 0;
-        }
-        .btn-custom-red:hover {
-            background-color: var(--color-focus);
-            border-color: var(--color-focus);
-            color: white;
-        }
-        .back-link {
-            text-decoration: none;
-            color: #6c757d;
-            transition: color 0.2s;
-        }
-        .back-link:hover {
-            color: #333;
-        }
-        /* Estilo para el contenedor de Proyectos */
-        #titulo-container {
-            border: 1px solid var(--color-border);
-            border-radius: 5px;
-            padding: 1.25rem;
-            margin-top: 1rem;
-            background-color: #fdfdfd;
-        }
-    </style>
 </head>
 <body>
     <div class="container my-5">
@@ -84,6 +27,7 @@
                                 <label for="rut-alumno" class="form-label fw-bold">RUT Alumno</label>
                                 <input class="form-control" list="alumnos-list" id="rut-alumno" name="rut_alumno" placeholder="Escriba para buscar..." required>
                                 <datalist id="alumnos-list">
+                                <!-- Lista de alumnos ingresados al sistema -->
                                     @if(isset($alumnos))
                                         @foreach($alumnos as $alumno)
                                             <option value="{{ $alumno->rut_alumno }} {{ $alumno->nombre_alumno }}">
@@ -92,13 +36,14 @@
                                 </datalist>
                             </div>
 
-                            <div class="mb-3">
+                            <div class="mb-3 d-none" id="profesor-container">
                                 <label for="profesor-guia" class="form-label fw-bold" id="label-profesor">Profesor Guía/Tutor</label>
                                 <input class="form-control" list="profesores-list" id="profesor-guia" name="profesor_guia_rut" placeholder="Escriba para buscar..." required>
+                                <!-- Lista de profesores ingresados al sistema -->
                                 <datalist id="profesores-list">
-                                     @if(isset($profesores))
+                                    @if(isset($profesores))
                                         @foreach($profesores as $profesor)
-                                            <option value="{{ $profesor->rut_profesor }} {{ $profesor->nombre_profesor }}">
+                                            <option value="{{ $profesor->nombre_profesor }}">
                                         @endforeach
                                     @endif
                                 </datalist>
@@ -128,7 +73,15 @@
                                 </div>
 
                                 <div class="mb-3">
-                                    <label for="profesor-coguia" class="form-label fw-bold">Profesor Co-guía (opcional)</label>
+                                    <label for="toggle-coguia" class="form-label fw-bold">¿Desea incluir un profesor co-guía?</label>
+                                    <select class="form-select" id="toggle-coguia" name="toggle_coguia">
+                                        <option value="no" selected>No</option>
+                                        <option value="si">Sí</option>
+                                    </select>
+                                </div>
+
+                                <div class="mb-3 d-none" id="coguia-container">
+                                    <label for="profesor-coguia" class="form-label fw-bold">Profesor Co-guía</label>
                                     <input class="form-control" list="profesores-list" id="profesor-coguia" name="profesor_coguia_rut" placeholder="Escriba para buscar...">
                                 </div>
 
@@ -152,11 +105,11 @@
                                 <label class="form-label fw-bold">Semestre inicio</label>
                                 <div class="row g-2">
                                     <div class="col">
-                                        <input type="number" class="form-control" id="semestre-ano" name="semestre-ano" placeholder="AAAA" min="1990" max="2050" required>
+                                        <input type="number" class="form-control" id="semestre-ano" name="semestre-ano" value="2025" min="1990" max="2050" required>
                                         <div class="form-text">Ingrese año</div>
                                     </div>
                                     <div class="col">
-                                        <input type="number" class="form-control" id="semestre-periodo" name="semestre-periodo" min="1" max="2" placeholder="N" required>
+                                        <input type="number" class="form-control" id="semestre-periodo" name="semestre-periodo" min="1" max="2" value="1" required>
                                         <div class="form-text">Ingrese semestre (1 - 2)</div>
                                     </div>
                                 </div>
@@ -181,39 +134,6 @@
             </div>
         </div>
     </div>
-
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
-
-    <script>
-        document.addEventListener('DOMContentLoaded', function () {
-            const tipoHabilitacion = document.getElementById('tipo-habilitacion');
-            const tituloContainer = document.getElementById('titulo-container');
-            const practicaContainer = document.getElementById('practica-container');
-            
-            // Seleccionamos la etiqueta del profesor
-            const labelProfesor = document.getElementById('label-profesor');
-
-            tipoHabilitacion.addEventListener('change', function () {
-                const selectedValue = this.value;
-                
-                // Ocultar ambos
-                tituloContainer.classList.add('d-none');
-                practicaContainer.classList.add('d-none');
-                
-                // Lógica para cambiar el texto Y mostrar contenedores
-                if (selectedValue === 'PrInv' || selectedValue === 'PrIng') {
-                    tituloContainer.classList.remove('d-none');
-                    labelProfesor.innerText = 'Profesor Guía'; // <-- CAMBIO
-                } else if (selectedValue === 'PrTut') {
-                    practicaContainer.classList.remove('d-none');
-                    labelProfesor.innerText = 'Profesor Tutor'; // <-- CAMBIO
-                } else {
-                    // Estado inicial
-                    labelProfesor.innerText = 'Profesor Guía/Tutor'; 
-                }
-            });
-        });
-    </script>
 
 </body>
 </html>

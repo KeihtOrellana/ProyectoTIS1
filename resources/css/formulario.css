@@ -1,0 +1,56 @@
+:root {
+    --color-titulo: #8B0000;
+    --color-focus: #A52A2A;
+    --color-focus-shadow: rgba(139, 0, 0, 0.2);
+    --color-border: #D3BDBD;
+}
+body {
+    background-color: #f4f4f4;
+}
+.custom-card {
+    border-top: 5px solid var(--color-titulo);
+    border-radius: 8px;
+}
+.custom-card-title {
+    color: var(--color-titulo);
+    font-weight: 600;
+}
+.form-control, .form-select, .form-control:disabled, .form-control[readonly] {
+    border-color: var(--color-border);
+    background-color: #fff;
+}
+.form-control:focus, .form-select:focus {
+    border-color: var(--color-focus);
+    box-shadow: 0 0 5px var(--color-focus-shadow);
+}
+.form-control:disabled, .form-control[readonly] {
+     background-color: #f8f9fa; /* Color gris claro para campos deshabilitados */
+}
+.btn-custom-red {
+    background-color: var(--color-titulo);
+    border-color: var(--color-titulo);
+    color: white;
+    font-weight: 600;
+    padding: 10px 0;
+}
+.btn-custom-red:hover {
+    background-color: var(--color-focus);
+    border-color: var(--color-focus);
+    color: white;
+}
+.back-link {
+    text-decoration: none;
+    color: #6c757d;
+    transition: color 0.2s;
+}
+.back-link:hover {
+    color: #333;
+}
+/* Estilo para el contenedor de Proyectos */
+#titulo-container {
+    border: 1px solid var(--color-border);
+    border-radius: 5px;
+    padding: 1.25rem;
+    margin-top: 1rem;
+    background-color: #fdfdfd;
+}

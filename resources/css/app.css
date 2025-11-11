@@ -1,4 +1,16 @@
-@import 'tailwindcss';
+@import 'bootstrap/dist/css/bootstrap.min.css';
+
+@import '@fortawesome/fontawesome-free/css/all.min.css';
+
+
+/*2. Estilos perzonalizados*/
+
+/* Estilos personalizados del formulario */
+@import './formulario.css';
+
+/* Estilos personalizados del index */
+@import './indexPrincipal.css';
+
 
 @source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
 @source '../../storage/framework/views/*.php';
