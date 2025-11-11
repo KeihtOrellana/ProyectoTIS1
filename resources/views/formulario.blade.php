@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Formulario de Habilitación Profesional</title>
     <link rel="icon" href="{{ asset('logo.ico') }}">
-    <!-- Carga los estilos y scripts mejor y mas rapido -->
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 
 </head>
@@ -20,30 +19,48 @@
                         <h1 class="h3 mb-2 custom-card-title">Formulario de Habilitación Profesional</h1>
                         <p class="card-text text-muted mb-4">Complete los siguientes campos para registrar la habilitación.</p>
 
+                        @if (session('success'))
+                            <div class="alert alert-success" role="alert">
+                                {{ session('success') }}
+                            </div>
+                        @endif
+                        @if (session('error'))
+                            <div class="alert alert-danger" role="alert">
+                                {{ session('error') }}
+                            </div>
+                        @endif
                         <form method="POST" action="/registrar-habilitacion">
                             @csrf 
 
                             <div class="mb-3">
-                                <label for="rut-alumno" class="form-label fw-bold">RUT Alumno</label>
-                                <input class="form-control" list="alumnos-list" id="rut-alumno" name="rut_alumno" placeholder="Escriba para buscar..." required>
+                                <label for="rut-alumno-display" class="form-label fw-bold">Alumno</label>
+                                <input class="form-control" list="alumnos-list" id="rut-alumno-display" 
+                                       placeholder="Escriba para buscar..." required
+                                       data-datalist-id="alumnos-list" 
+                                       data-hidden-id="rut-alumno-hidden">
+                                <input type="hidden" name="rut_alumno" id="rut-alumno-hidden">
+                                
                                 <datalist id="alumnos-list">
-                                <!-- Lista de alumnos ingresados al sistema -->
                                     @if(isset($alumnos))
                                         @foreach($alumnos as $alumno)
-                                            <option value="{{ $alumno->rut_alumno }} {{ $alumno->nombre_alumno }}">
+                                            <option value="{{ $alumno->nombre_alumno }}" data-rut="{{ $alumno->rut_alumno }}">
                                         @endforeach
                                     @endif
                                 </datalist>
                             </div>
 
                             <div class="mb-3 d-none" id="profesor-container">
-                                <label for="profesor-guia" class="form-label fw-bold" id="label-profesor">Profesor Guía/Tutor</label>
-                                <input class="form-control" list="profesores-list" id="profesor-guia" name="profesor_guia_rut" placeholder="Escriba para buscar..." required>
-                                <!-- Lista de profesores ingresados al sistema -->
+                                <label for="profesor-guia-display" class="form-label fw-bold" id="label-profesor">Profesor Guía/Tutor</label>
+                                <input class="form-control" list="profesores-list" id="profesor-guia-display" 
+                                       placeholder="Escriba para buscar..." required
+                                       data-datalist-id="profesores-list" 
+                                       data-hidden-id="profesor-guia-hidden">
+                                <input type="hidden" name="profesor_guia_rut" id="profesor-guia-hidden">
+                                
                                 <datalist id="profesores-list">
                                     @if(isset($profesores))
                                         @foreach($profesores as $profesor)
-                                            <option value="{{ $profesor->nombre_profesor }}">
+                                            <option value="{{ $profesor->nombre_profesor }}" data-rut="{{ $profesor->rut_profesor }}">
                                         @endforeach
                                     @endif
                                 </datalist>
@@ -64,12 +81,17 @@
 
                                 <div class="mb-3">
                                     <label for="titulo-proyecto" class="form-label fw-bold">Nombre Proyecto</label>
-                                    <input type="text" class="form-control" id="titulo-proyecto" name="titulo" maxlength="100">
+                                    <input type="text" class="form-control" id="titulo-proyecto" name="titulo" maxlength="100" required>
                                 </div>
 
                                 <div class="mb-3">
-                                    <label for="profesor-comision" class="form-label fw-bold">Profesor Comisión</label>
-                                    <input class="form-control" list="profesores-list" id="profesor-comision" name="profesor_comision" placeholder="Escriba para buscar...">
+                                    <label for="profesor-comision-display" class="form-label fw-bold">Profesor Comisión</label>
+                                    <input class="form-control" list="profesores-list" id="profesor-comision-display" 
+                                           placeholder="Escriba para buscar..."
+                                           data-datalist-id="profesores-list" 
+                                           data-hidden-id="profesor-comision-hidden"
+                                           required>
+                                    <input type="hidden" name="profesor_comision_rut" id="profesor-comision-hidden">
                                 </div>
 
                                 <div class="mb-3">
@@ -81,8 +103,12 @@
                                 </div>
 
                                 <div class="mb-3 d-none" id="coguia-container">
-                                    <label for="profesor-coguia" class="form-label fw-bold">Profesor Co-guía</label>
-                                    <input class="form-control" list="profesores-list" id="profesor-coguia" name="profesor_coguia_rut" placeholder="Escriba para buscar...">
+                                    <label for="profesor-coguia-display" class="form-label fw-bold">Profesor Co-guía</label>
+                                    <input class="form-control" list="profesores-list" id="profesor-coguia-display" 
+                                           placeholder="Escriba para buscar..."
+                                           data-datalist-id="profesores-list" 
+                                           data-hidden-id="profesor-coguia-hidden">
+                                    <input type="hidden" name="profesor_coguia_rut" id="profesor-coguia-hidden">
                                 </div>
 
                                 <div class="mb-3">
@@ -94,11 +120,16 @@
                             <div id="practica-container" class="d-none"> 
                                 <div class="mb-3">
                                     <label for="nombre-empresa" class="form-label fw-bold">Nombre empresa</label>
-                                    <input type="text" class="form-control" id="nombre-empresa" name="nombre-empresa" maxlength="50">
+                                    <input type="text" class="form-control" id="nombre-empresa" name="nombre-empresa" maxlength="50" required>
                                 </div>
                                 <div class="mb-3">
                                     <label for="nombre-supervisor" class="form-label fw-bold">Nombre Supervisor</label>
-                                    <input type="text" class="form-control" id="nombre-supervisor" name="nombre_supervisor" maxlength="100">
+                                    <input type="text" class="form-control" id="nombre-supervisor" name="nombre_supervisor" maxlength="100" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="descripcion-practica" class="form-label fw-bold">Descripción</label>
+                                    <textarea class="form-control" id="descripcion-practica" name="descripcion_practica" rows="3"
+                                        placeholder="Añade una breve descripción" required></textarea>
                                 </div>
                             </div>
                             <div class="mb-3">
@@ -132,6 +163,11 @@
                 </div>
 
             </div>
+        </div>
+    </div>
+
+</body>
+</html>
         </div>
     </div>
 

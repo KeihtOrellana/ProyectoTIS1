@@ -16,7 +16,6 @@ public function up(): void
         $table->unsignedBigInteger('id_habilitacion')->primary();
         $table->integer('alumno_rut')->unsigned();
         $table->string('semestre_inicio', 6);
-        $table->string('tipo_proyecto'); // "Pring" o "Prinv"
 
         // --- CAMPOS COMUNES (Duplicados) ---
         $table->text('descripcion');

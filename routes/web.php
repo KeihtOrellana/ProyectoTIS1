@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Models\Profesor;
 use App\Models\Alumno;
+use App\Http\Controllers\HabilitacionController;
 
 Route::get('/', function () {
     return view('indexPrincipal');
@@ -25,3 +26,5 @@ Route::get('/formulario', function () {
         'alumnos' => $alumnos
     ]);
 });
+
+Route::post('/registrar-habilitacion', [HabilitacionController::class, 'store']);
