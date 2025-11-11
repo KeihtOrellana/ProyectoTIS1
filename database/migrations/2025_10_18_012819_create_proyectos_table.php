@@ -12,21 +12,16 @@ return new class extends Migration
 public function up(): void
 {
     Schema::create('proyectos', function (Blueprint $table) {
-        // Clave primaria compuesta (heredada de Alumno)
+        $table->unsignedBigInteger('id_habilitacion')->primary();
         $table->integer('alumno_rut')->unsigned();
         $table->string('semestre_inicio', 6);
-        $table->primary(['alumno_rut', 'semestre_inicio']);
-
-        // Atributo discriminador (para Pring vs Prinv)
         $table->string('tipo_proyecto'); // "Pring" o "Prinv"
 
-        // --- CAMPOS COMUNES (Duplicados) ---
+        // --- CAMPOS COMUNES 
         $table->text('descripcion');
         $table->date('fecha_inicio');
         $table->decimal('nota_final', 2, 1)->nullable();
         $table->date('fecha_nota')->nullable();
-
-        // --- CAMPOS ESPECÍFICOS DE PROYECTO ---
         $table->string('titulo', 80);
 
         // --- RELACIONES CON PROFESORES ---

@@ -13,9 +13,10 @@ public function up(): void
 {
     Schema::create('practica_tutelada', function (Blueprint $table) {
         // Clave primaria compuesta (heredada de Alumno)
+        $table->unsignedBigInteger('id_habilitacion')->primary();
         $table->integer('alumno_rut')->unsigned();
         $table->string('semestre_inicio', 6);
-        $table->primary(['alumno_rut', 'semestre_inicio']);
+        $table->string('tipo_proyecto'); // "Pring" o "Prinv"
 
         // --- CAMPOS COMUNES (Duplicados) ---
         $table->text('descripcion');
