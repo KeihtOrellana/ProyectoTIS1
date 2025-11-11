@@ -93,7 +93,7 @@
                             </div>
 
                             <div class="mb-3">
-                                <label for="profesor-guia" class="form-label fw-bold">Profesor Guía/Tutor</label>
+                                <label for="profesor-guia" class="form-label fw-bold" id="label-profesor">Profesor Guía/Tutor</label>
                                 <input class="form-control" list="profesores-list" id="profesor-guia" name="profesor_guia_rut" placeholder="Escriba para buscar..." required>
                                 <datalist id="profesores-list">
                                      @if(isset($profesores))
@@ -189,16 +189,27 @@
             const tipoHabilitacion = document.getElementById('tipo-habilitacion');
             const tituloContainer = document.getElementById('titulo-container');
             const practicaContainer = document.getElementById('practica-container');
+            
+            // Seleccionamos la etiqueta del profesor
+            const labelProfesor = document.getElementById('label-profesor');
+
             tipoHabilitacion.addEventListener('change', function () {
                 const selectedValue = this.value;
+                
                 // Ocultar ambos
                 tituloContainer.classList.add('d-none');
                 practicaContainer.classList.add('d-none');
-                // Mostrar el correcto
+                
+                // Lógica para cambiar el texto Y mostrar contenedores
                 if (selectedValue === 'PrInv' || selectedValue === 'PrIng') {
                     tituloContainer.classList.remove('d-none');
+                    labelProfesor.innerText = 'Profesor Guía'; // <-- CAMBIO
                 } else if (selectedValue === 'PrTut') {
                     practicaContainer.classList.remove('d-none');
+                    labelProfesor.innerText = 'Profesor Tutor'; // <-- CAMBIO
+                } else {
+                    // Estado inicial
+                    labelProfesor.innerText = 'Profesor Guía/Tutor'; 
                 }
             });
         });

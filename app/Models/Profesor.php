@@ -15,7 +15,7 @@ class Profesor extends Model
      * @var string
      */
     protected $primaryKey = 'rut_profesor';
-
+    protected $table = 'profesores';
     /**
      * Indica si la clave primaria es autoincremental.
      *
