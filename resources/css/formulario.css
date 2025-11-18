@@ -38,11 +38,20 @@ body {
     border-color: var(--color-focus);
     color: white;
 }
+
+
 .back-link {
+    background-color: rgba(255, 255, 255, 0.8);
+    padding: 10px 20px;
+    border-radius: 50px;
     text-decoration: none;
     color: #6c757d;
+    font-weight: 600;
+    display: inline-block;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
     transition: color 0.2s;
 }
+
 .back-link:hover {
     color: #333;
 }
