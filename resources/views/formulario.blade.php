@@ -21,6 +21,7 @@
                         <h1 class="h3 mb-2 custom-card-title">Formulario de Habilitación Profesional</h1>
                         <p class="card-text text-muted mb-4">Complete los siguientes campos para registrar la habilitación.</p>
 
+                        {{-- ALERTAS DE ÉXITO O ERROR --}}
                         @if (session('success'))
                             <div class="alert alert-success" role="alert" id="success-alert">
                                 {{ session('success') }}
@@ -30,6 +31,76 @@
                         @if (session('error'))
                             <div class="alert alert-danger" role="alert" id="error-alert">
                                 {{ session('error') }}
+                            </div>
+                        @endif
+
+                        {{-- BLOQUE: DETALLES DEL PROYECTO REGISTRADO (SI EXISTE) --}}
+                        @if (session('proyecto_creado'))
+                            <div class="card border-danger mb-4">
+                                <div class="card-header bg-danger text-white">
+                                    <strong>Detalles del Proyecto Registrado</strong>
+                                </div>
+                                <div class="card-body">
+                                    <div class="row mb-2">
+                                        <div class="col-md-4 fw-bold">ID Habilitación:</div>
+                                        <div class="col-md-8">{{ session('proyecto_creado')->id_habilitacion }}</div>
+                                    </div>
+                                    <div class="row mb-2">
+                                        <div class="col-md-4 fw-bold">Título:</div>
+                                        <div class="col-md-8">{{ session('proyecto_creado')->titulo }}</div>
+                                    </div>
+                                    <div class="row mb-2">
+                                        <div class="col-md-4 fw-bold">Descripción:</div>
+                                        <div class="col-md-8">{{ session('proyecto_creado')->descripcion }}</div>
+                                    </div>
+                                    <hr>
+                                    <div class="row mb-2">
+                                        <div class="col-md-4 fw-bold">RUT Prof. Guía:</div>
+                                        <div class="col-md-8">{{ session('proyecto_creado')->profesor_guia_rut }}</div>
+                                    </div>
+                                    <div class="row mb-2">
+                                        <div class="col-md-4 fw-bold">RUT Prof. Comisión:</div>
+                                        <div class="col-md-8">{{ session('proyecto_creado')->profesor_comision_rut }}</div>
+                                    </div>
+                                    @if(session('proyecto_creado')->profesor_coguia_rut)
+                                    <div class="row mb-2">
+                                        <div class="col-md-4 fw-bold">RUT Prof. Co-Guía:</div>
+                                        <div class="col-md-8">{{ session('proyecto_creado')->profesor_coguia_rut }}</div>
+                                    </div>
+                                    @endif
+                                </div>
+                            </div>
+                        @endif
+
+                        {{-- BLOQUE: DETALLES DE PRÁCTICA TUTELADA (SI EXISTE) --}}
+                        @if (session('practica_creada'))
+                            <div class="card border-danger mb-4">
+                                <div class="card-header bg-danger text-white">
+                                    <strong>Detalles de la Práctica Registrada</strong>
+                                </div>
+                                <div class="card-body">
+                                    <div class="row mb-2">
+                                        <div class="col-md-4 fw-bold">ID Habilitación:</div>
+                                        <div class="col-md-8">{{ session('practica_creada')->id_habilitacion }}</div>
+                                    </div>
+                                    <div class="row mb-2">
+                                        <div class="col-md-4 fw-bold">RUT Profesor Tutor:</div>
+                                        <div class="col-md-8">{{ session('practica_creada')->profesor_tutor_rut }}</div>
+                                    </div>
+                                    <div class="row mb-2">
+                                        <div class="col-md-4 fw-bold">Nombre Empresa:</div>
+                                        <div class="col-md-8">{{ session('practica_creada')->nombre_empresa }}</div>
+                                    </div>
+                                    <div class="row mb-2">
+                                        <div class="col-md-4 fw-bold">Nombre Supervisor:</div>
+                                        <div class="col-md-8">{{ session('practica_creada')->nombre_supervisor }}</div>
+                                    </div>
+                                    <hr>
+                                    <div class="row mb-2">
+                                        <div class="col-md-4 fw-bold">Descripción:</div>
+                                        <div class="col-md-8">{{ session('practica_creada')->descripcion }}</div>
+                                    </div>
+                                </div>
                             </div>
                         @endif
                         

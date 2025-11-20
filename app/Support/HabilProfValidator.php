@@ -136,9 +136,9 @@ class HabilProfValidator
     public static function validarPracticaTutelada(array $d): array
     {
         $v = Validator::make($d, [
-            'nombre_empresa'       => self::reglaTextoSoloLetras(1,50), 
-            'nombre_supervisor'    => self::reglaTextoSoloLetras(13,100), 
-            'descripcion_practica' => self::reglaTextoSoloLetras(10,1000), 
+            'nombre_empresa'       => self::reglaTextoSoloLetras(50), 
+            'nombre_supervisor'    => self::reglaTextoSoloLetras(100), 
+            'descripcion_practica' => self::reglaTextoSoloLetras(1000), 
             'profesor_tutor_rut'   => self::reglaRut(),
             'semestre_inicio'      => self::reglaSemestre(),
         ]);
