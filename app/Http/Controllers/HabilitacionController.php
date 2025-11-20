@@ -62,12 +62,12 @@ class HabilitacionController extends Controller
                 $validacionProyecto = HabilProfValidator::validarProyecto($request->all());
 
                 if (!$validacionProyecto['ok']) {
-                    $errores = implode(' ', \Illuminate\Support\Arr::flatten($validacionProyecto['errors']));
-                    return back()->with('error', 'Error en datos del proyecto: ' . $errores)->withInput();
+                    return back()->with('error', 'Los datos ingresados no son válidos')->withInput();
                 }
                 
                 // Limite de proyectos
                 $proyectosActivosGuia = Proyecto::where('profesor_guia_rut', $profesorGuiaRut)
+                                                ->where('semestre_inicio', $semestreInicio)
                                                 ->whereNull('nota_final')
                                                 ->count();
 
@@ -114,6 +114,15 @@ class HabilitacionController extends Controller
 
                 if (!$validationResult['ok']) {
                     return back()->with('error', 'Los datos ingresados no son válidos')->withInput();
+                }
+                
+                $practicasActivosGuia = PracticaTutelada::where('profesor_tutor_rut', $profesorTutorRut)
+                                                        ->where('semestre_inicio', $semestreInicio)
+                                                        ->whereNull('nota_final')
+                                                        ->count();
+
+                if ($practicasActivosGuia >= 5) {
+                    return back()->with('error', 'Error: Límite de asignaciones alcanzado.');
                 }
 
                 // Crear Practica

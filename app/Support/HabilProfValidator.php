@@ -217,9 +217,6 @@ class HabilProfValidator
         $v = Validator::make($d, [
             'titulo'      => self::reglaTitulo(),
             'descripcion' => self::reglaDescripcion(),
-        ], [
-            'titulo.regex' => 'El título solo debe contener letras y espacios.',
-            'descripcion.regex' => 'La descripción solo debe contener letras y signos de puntuación.',
         ]);
 
         return self::resultado($v);
