@@ -1,10 +1,10 @@
 :root {
-    --color-ingreso: #20c997;
-    --color-editar: #ffc107;
-    --color-listado: #aa85ed;
+    --color-ingreso: #8B0000;
+    --color-editar: #8B0000;
+    --color-listado: #8B0000;
     --color-titulo: #8B0000;
 }
-body {
+body {/*Creo que queda bonita esta imagen */
 background-image: url('https://assets.isu.pub/document-structure/231005155434-da94a7ed3cd3feaac2cbe5b7b4bacc8e/v1/d6f81d05b8bcaf0dcc09bd9ead5f15d7.jpeg');
 background-repeat: no-repeat;
 background-size: cover;
@@ -15,7 +15,7 @@ background-position: 50% px;
 .custom-card {
     border-top: 5px solid var(--color-titulo);
     border-radius: 8px;
-    background-color: rgba(255, 255, 255, 0.8);
+    background-color: rgba(255, 255, 255, 0.8);/*acá se aplica la transparencia de la caja */
     
 }
 .custom-card-title {
@@ -24,7 +24,7 @@ background-position: 50% px;
     font-size: 28px;
     
 }
-/* Botones de menú personalizados */
+/* Botones del menú */
 .menu-button {
     display: flex;
     flex-direction: column;
@@ -49,8 +49,10 @@ background-position: 50% px;
     font-size: 2.5rem;
     margin-bottom: 15px;
 }
-/* Asignar colores de las imágenes */
+/* los colores de los hover */
 #btn-ingreso { background-color: var(--color-ingreso); }
-#btn-editar { background-color: var(--color-editar); color: #333; }
+#btn-ingreso:hover { color: #333; }
+#btn-editar { background-color: var(--color-editar); }
 #btn-editar:hover { color: #333; }
 #btn-listado { background-color: var(--color-listado); }
+#btn-listado:hover { color: #333; }

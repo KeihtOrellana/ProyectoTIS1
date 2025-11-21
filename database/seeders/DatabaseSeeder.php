@@ -22,9 +22,5 @@ class DatabaseSeeder extends Seeder
         SimNotaSeeder::class,
         ]);
 
-        User::factory()->create([
-            'name' => 'Test User',
-            'email' => 'test@example.com',
-        ]);
     }
 }

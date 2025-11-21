@@ -7,7 +7,6 @@ use Illuminate\Support\Facades\Validator;
 
 class HabilProfValidator
 {
-    // ========== REGLAS BÁSICAS ==========
     // R1.1 y R1.3: RUT ∈ [1.000.000, 99.999.999], 7–8 dígitos
     public static function reglaRut(): array
     {
@@ -48,7 +47,19 @@ class HabilProfValidator
         return ['nullable','regex:/^(0[1-9]|[12][0-9]|3[01])\/(0[1-9]|1[0-2])\/(2025|2026|2027|2028|2029|2030|2031|2032|2033|2034|2035|2036|2037|2038|2039|2040|2041|2042|2043|2044|2045)$/'];
     }
 
-    // ========== VALIDACIONES COMPUESTAS POR CASO ==========
+    // Regla para titulo, nombre_supervisor, nombre_empresa, despricion(proyecto o practica)
+    public static function reglaTextoSoloLetras(int $max): array
+    {
+        // La u al final del regex es para elUTF-8 (acentos y ñ)
+        $regex = '/^[A-Za-zñÑáéíóúÁÉÍÓÚ\s]+$/u'; 
+
+        return [
+            'required', 
+            'string', 
+            "max:{$max}",
+            'regex:' . $regex
+        ];
+    }
 
     // Alumno (R1.1, R1.2, R1.5)
     public static function validarAlumno(array $d): array
@@ -118,10 +129,21 @@ class HabilProfValidator
 
         return self::resultado($v);
     }
+    
+    // Valida todas las restricciones de la practica (Requisitos)
+    public static function validarPracticaTutelada(array $d): array
+    {
+        $v = Validator::make($d, [
+            'nombre_empresa'       => self::reglaTextoSoloLetras(50), 
+            'nombre_supervisor'    => self::reglaTextoSoloLetras(100), 
+            'descripcion_practica' => self::reglaDescripcion(), 
+            'profesor_tutor_rut'   => self::reglaRut(),
+            'semestre_inicio'      => self::reglaSemestre(),
+        ]);
 
-    // ========== HELPERS ==========
+        return self::resultado($v);
+    }
 
-    // Aplica capitalización tipo Título a nombre (opcional)
     protected static function afterCapitalizarNombre($validator, array $d, string $key): void
     {
         $validator->after(function($v) use ($d, $key) {
@@ -131,7 +153,6 @@ class HabilProfValidator
                 $nombre = implode(' ', array_map(function($pal){
                     return implode('-', array_map(fn($seg)=>mb_convert_case($seg, MB_CASE_TITLE, "UTF-8"), explode('-', $pal)));
                 }, preg_split('/\s+/', $nombre)));
-                // No marcamos error; si quieres, puedes devolver el nombre normalizado en tu flujo
             }
         });
     }
@@ -144,17 +165,43 @@ class HabilProfValidator
         return ['ok'=>true, 'errors'=>[]];
     }
 
-    // R1.12: Generar ID_Habilitacion = RUT_Alumno + AAAAY (como número entero)
-    public static function generarIdHabilitacion(int $rutAlumno, string $semestreInicio): int
+   // Reglas para proyectos
+
+    // R.Titulo: Solo letras y espacios. Min 10, Max 80.
+    public static function reglaTitulo(): array
     {
-        // semestre: "AAAA-Y" -> AAAA + Y
-        [$aaaa, $y] = explode('-', $semestreInicio);
+        return [
+            'required', 
+            'string', 
+            'min:10', 
+            'max:80', 
+            // Regex: Solo letras (mayus/minus), tildes (áéíóú), ñ y espacios.
+            'regex:/^[a-zA-ZñÑáéíóúÁÉÍÓÚüÜ\s]+$/'
+        ];
+    }
 
-        // Concatenamos rut + año + semestre
-        $id = $rutAlumno . $aaaa . $y;
+    // R.Descripcion: Solo letras, espacios y puntuación básica (.,). Min 10, Max 500.
+    public static function reglaDescripcion(): array
+    {
+        return [
+            'required', 
+            'string', 
+            'min:10', 
+            'max:1000',
+            // Regex: Letras, tildes, espacios y signos de puntuación básicos (.,;)
+            'regex:/^[a-zA-ZñÑáéíóúÁÉÍÓÚüÜ\s.,;]+$/'
+        ];
+    }
 
-        // Retorna como entero (compatible con BIGINT)
-        return (int) $id;
+    // Validar datos específicos del Proyecto
+    public static function validarProyecto(array $d): array
+    {
+        $v = Validator::make($d, [
+            'titulo'      => self::reglaTitulo(),
+            'descripcion' => self::reglaDescripcion(),
+        ]);
+
+        return self::resultado($v);
     }
 
 }

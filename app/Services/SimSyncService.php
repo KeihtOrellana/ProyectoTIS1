@@ -298,7 +298,7 @@ class SimSyncService
             Log::info("[SYNC] Proyecto: lote actualizado, acumulados={$updProy}");
         });
 
-        // --- PRÁCTICAS TUTELADAS ---
+        // PRÁCTICAS TUTELADAS
         PracticaTutelada::query()->orderBy('alumno_rut')->chunk(300, function ($chunk) use (&$updPrac) {
             foreach ($chunk as $pt) {
                 $changed = false;

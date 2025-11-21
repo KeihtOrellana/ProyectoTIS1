@@ -2,13 +2,8 @@
 
 @import '@fortawesome/fontawesome-free/css/all.min.css';
 
-
-/*2. Estilos perzonalizados*/
-
-/* Estilos personalizados del formulario */
 @import './formulario.css';
 
-/* Estilos personalizados del index */
 @import './indexPrincipal.css';
 
 

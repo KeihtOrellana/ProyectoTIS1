@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Gestión de Habilitación Profesional</title>
     <link rel="icon" href="{{ asset('logo.ico') }}">
-    <!-- Carga los estilos y scripts mejor y mas rapido -->
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
 <body>

@@ -1,3 +1,4 @@
+/*aqui definimos todos los colores para usarlos despues (el estilo) */
 :root {
     --color-titulo: #8B0000;
     --color-focus: #A52A2A;
@@ -24,7 +25,7 @@ body {
     box-shadow: 0 0 5px var(--color-focus-shadow);
 }
 .form-control:disabled, .form-control[readonly] {
-     background-color: #f8f9fa; /* Color gris claro para campos deshabilitados */
+    background-color: #2c313772; /*color gris claro para campos deshabilitados (el de nota)*/
 }
 .btn-custom-red {
     background-color: var(--color-titulo);
@@ -55,7 +56,7 @@ body {
 .back-link:hover {
     color: #333;
 }
-/* Estilo para el contenedor de Proyectos */
+
 #titulo-container {
     border: 1px solid var(--color-border);
     border-radius: 5px;

@@ -9,5 +9,3 @@ Artisan::command('inspire', function () {
 })->purpose('Display an inspiring quote');
 
 Schedule::command('simulacion:sync')->everyMinute();
-// si quieres con notas cada 5 min:
-// Schedule::command('simulacion:sync --with-notas')->everyFiveMinutes();

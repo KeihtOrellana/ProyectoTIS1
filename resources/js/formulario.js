@@ -4,16 +4,18 @@ import TomSelect from 'tom-select';
 
 document.addEventListener('DOMContentLoaded', function () {
 
-
+/*Esto era para arreglar la visual de los campos de seleccion de texto
+era necesario crear este tomselect */
     const tomSelectConfig = {
-        create: false, // Evita que el usuario cree nuevas opciones
+        create: false,
         sortField: {
             field: "text",
             direction: "asc"
         }
     };
 
-    // Inicializa todos los selectores de búsqueda
+    /*Lo mismo aqui, era necesario inizializar los tomselect para mejorar los
+    campos de texto seleccionable -nombre alumno y profes- */
     if (document.getElementById('select-alumno')) {
         new TomSelect('#select-alumno', tomSelectConfig);
     }
@@ -27,42 +29,35 @@ document.addEventListener('DOMContentLoaded', function () {
         new TomSelect('#select-profesor-coguia', tomSelectConfig);
     }
 
-    
-    // --- OBTENER TODOS LOS ELEMENTOS ---
-
     const tipoHabilitacion = document.getElementById('tipo-habilitacion');
     
-    // Contenedores
+    /*contenedores */
     const tituloContainer = document.getElementById('titulo-container');
     const practicaContainer = document.getElementById('practica-container');
     const profesorContainer = document.getElementById('profesor-container');
     const coguiaContainer = document.getElementById('coguia-container');
-    
-    // Etiquetas y Selects
     const labelProfesor = document.getElementById('label-profesor');
     const toggleCoguia = document.getElementById('toggle-coguia');
 
-    // ==========================================
     const tituloProyecto = document.getElementById('titulo-proyecto');
-    const profesorComision = document.getElementById('select-profesor-comision'); // <--- CAMBIO
+    const profesorComision = document.getElementById('select-profesor-comision');
     const nombreEmpresa = document.getElementById('nombre-empresa');
     const nombreSupervisor = document.getElementById('nombre-supervisor');
-    const profesorGuia = document.getElementById('select-profesor-guia'); // <--- CAMBIO
+    const profesorGuia = document.getElementById('select-profesor-guia');
     const descripcionPractica = document.getElementById('descripcion-practica');
     const descripcionProyecto = document.getElementById('descripcion');
 
 
-    // --- LÓGICA DE MOSTRAR/OCULTAR Y REQUIRED ---
+    /*Todo esto es para ocultar los campos de profesor coguia, titulo, etc. */
     if (tipoHabilitacion) {
         tipoHabilitacion.addEventListener('change', function () {
             const selectedValue = this.value;
-            
-            // 1. Ocultar todo
+            /*Los oculta */
             tituloContainer.classList.add('d-none');
             practicaContainer.classList.add('d-none');
             profesorContainer.classList.add('d-none');
             
-            // 2. Resetear 'required' de TODOS los campos
+            /* aqui es necesario como "reiniciar" la inicializacion de los contenedores*/
             tituloProyecto.required = false;
             profesorComision.required = false;
             nombreEmpresa.required = false;
@@ -71,13 +66,13 @@ document.addEventListener('DOMContentLoaded', function () {
             descripcionPractica.required = false;
             descripcionProyecto.required = false;
             
-            // 3. Mostrar contenedor y poner 'required' según la selección
+            /*Si se selecciona PRINV o PRING aparecen los  campos */
             if (selectedValue === 'PrInv' || selectedValue === 'PrIng') {
                 tituloContainer.classList.remove('d-none');
                 profesorContainer.classList.remove('d-none');
                 labelProfesor.innerText = 'Profesor Guía';
                 
-                // Hacer obligatorios los campos de Proyecto
+                /*obligatoriedad de campos */
                 tituloProyecto.required = true;
                 profesorComision.required = true;
                 profesorGuia.required = true;
@@ -87,8 +82,6 @@ document.addEventListener('DOMContentLoaded', function () {
                 practicaContainer.classList.remove('d-none');
                 profesorContainer.classList.remove('d-none');
                 labelProfesor.innerText = 'Profesor Tutor';
-
-                // Hacer obligatorios los campos de Práctica
                 nombreEmpresa.required = true;
                 nombreSupervisor.required = true;
                 profesorGuia.required = true;
@@ -99,7 +92,7 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     }
 
-    // --- MUESTRA Y OCULTA EL PROFESOR CO-GUIA ---
+    /** esto es necesario para que aparezca el profesor coguia segun corresponda */
     if (toggleCoguia && coguiaContainer) {
         toggleCoguia.addEventListener('change', function() {
             if (this.value === 'si') {
@@ -113,32 +106,53 @@ document.addEventListener('DOMContentLoaded', function () {
     const errorAlert = document.getElementById('error-alert');
     if (successAlert) {
         setTimeout(() => {
-            // Inicia la transición de desvanecimiento
+            /**agregue esto para que el mensaje de exito se vaya despues de un rato */
             successAlert.style.transition = 'opacity 0.3s ease-out';
             successAlert.style.opacity = '0';
-            
-            // Espera a que termine la transición (0.3s) y luego la elimina
             setTimeout(() => {
                 successAlert.remove();
-            }, 300); // 300ms = 0.3s (debe coincidir con la transición)
+            }, 300); // 300ms = 0.3s
             
-        }, 3000); // 3000ms = 3 segundos de espera
+        }, 3000); // 3 segundos de espera
     }
 
     if (errorAlert) {
-        // Espera 3 segundos (3000 milisegundos)
+        /**lo mismo de sacar el mensaje pero para los mensajes de error */
         setTimeout(() => {
-            // Inicia la transición de desvanecimiento
             errorAlert.style.transition = 'opacity 0.3s ease-out';
             errorAlert.style.opacity = '0';
-            
-            // Espera a que termine la transición (0.3s) y luego la elimina
             setTimeout(() => {
                 errorAlert.remove();
-            }, 300); // 300ms = 0.3s (debe coincidir con la transición)
+            }, 300);
             
-        }, 3000); // 3000ms = 3 segundos de espera
+        }, 30000);
     }
 });
 
+document.addEventListener('DOMContentLoaded', function () {
+    /**esto es para configurar el tomselect. NECESARIO */
+    const tomSelectConfig = {
+        create: false,
+        sortField: { field: "text" }
+    };
+
+    /**aqui se logra mejorar el campo alumno. ya no se muestran todos los alumnos
+     * en un lateral del campo
+     */
+    if (document.getElementById('select-alumno')) {
+        new TomSelect('#select-alumno', tomSelectConfig);
+    }
+
+    if (document.getElementById('select-profesor-guia')) {
+        new TomSelect('#select-profesor-guia', tomSelectConfig);
+    }
+
+    if (document.getElementById('select-profesor-comision')) {
+        new TomSelect('#select-profesor-comision', tomSelectConfig);
+    }
+
+    if (document.getElementById('select-profesor-coguia')) {
+        new TomSelect('#select-profesor-coguia', tomSelectConfig);
+    }
+});
 

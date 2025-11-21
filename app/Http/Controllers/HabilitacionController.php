@@ -3,96 +3,130 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Models\Proyecto; // Asegúrate de importar tu modelo
+use App\Models\Proyecto; 
 use App\Models\PracticaTutelada; 
-use Illuminate\Support\Facades\Log; // Para registrar errores
-use Carbon\Carbon; // Para manejar fechas
+use App\Support\HabilProfValidator;
+use Carbon\Carbon; 
 
 class HabilitacionController extends Controller
 {
-    /**
-     * Almacena una nueva habilitación profesional.
-     */
+    /* Almacena una nueva habilitacion profesional. */
     public function store(Request $request)
     {
-        // --- 1. PRE-PROCESAMIENTO DE DATOS ---
-
-        // El RUT ahora viene directamente del campo oculto.
         $rutAlumno = (int)$request->input('rut_alumno');
-
-        // Combinamos año y período en el formato 'YYYY-S'
         $semestreInicio = $request->input('semestre-ano') . '-' . $request->input('semestre-periodo');
-        
-        // --- 2. LÓGICA CONDICIONAL (Proyecto vs Práctica) ---
-
         $tipo = $request->input('tipo_habilitacion');
 
-        if ($tipo == 'PrInv' || $tipo == 'PrIng') {
-            
-            //Esto es para que no salga un mensaje de error gigante cuando se trata de agregar una
-            //practica a un alumno que ya la tiene en ese semestre
-            $yaExisteProyecto = Proyecto::where('alumno_rut', $rutAlumno)
-                                        ->where('semestre_inicio', $semestreInicio)
-                                        ->exists(); // exists() es más rápido que first()
+        // Inicializamos variables en null para la vista
+        $nuevoProyecto = null;
+        $nuevaPractica = null;
 
-            if ($yaExisteProyecto) {
-                return back()->with('error', 'Error: Este alumno ya tiene un proyecto registrado para el semestre ' . $semestreInicio . '.');
-            }
-            // --- 3. OBTENER RUTS DE PROFESORES ---
-            // Los RUTs vienen limpios desde los campos ocultos
-            $profesorGuiaRut = (int)$request->input('profesor_guia_rut');
-            $profesorComisionRut = (int)$request->input('profesor_comision_rut');
-            
-            $profesorCoguiaRut = null;
-            if ($request->input('toggle_coguia') == 'si') {
-                 // Convertimos a (int) solo si existe
-                $profesorCoguiaRut = (int)$request->input('profesor_coguia_rut');
-                 // Si es 0 (porque el campo estaba vacío pero se marcó 'si'), lo volvemos null
-                if ($profesorCoguiaRut === 0) {
-                    $profesorCoguiaRut = null;
-                }
-            }
-
-            // --- 4. GUARDAR EL PROYECTO ---
-            try {
-                Proyecto::create([
-                    'alumno_rut' => $rutAlumno,
-                    'semestre_inicio' => $semestreInicio,
-                    'tipo_proyecto' => $tipo, // 'PrInv' o 'PrIng'
-                    'descripcion' => $request->input('descripcion'),
-                    'fecha_inicio' => Carbon::now(), // El form no lo tiene, ponemos la fecha actual
-                    'nota_final' => NULL, // El form lo tiene como readonly
-                    'titulo' => $request->input('titulo'),
-                    'profesor_guia_rut' => $profesorGuiaRut,
-                    'profesor_comision_rut' => $profesorComisionRut,
-                    'profesor_coguia_rut' => $profesorCoguiaRut // Será null si no se seleccionó o estaba vacío
-                ]);
-
-            } catch (\Exception $e) {
-                // Registrar el error para depuración
-                Log::error('Error al guardar Proyecto: ' . $e->getMessage());
-                // Redirigir con un mensaje de error
-                return back()->with('error', 'Error real: ' . $e->getMessage());
-            }
-
-        } elseif ($tipo == 'PrTut') {
-            
-            // Obtener el RUT del profesor tutor (reutilizando el campo guía)
-            $profesorTutorRut = (int)$request->input('profesor_guia_rut');
-            
-            //Esto es para que no salga un mensaje de error gigante cuando se trata de agregar una
-            //practica a un alumno que ya la tiene en ese semestre
-            $yaExistePractica = PracticaTutelada::where('alumno_rut', $rutAlumno)
+        try {
+            if ($tipo == 'PrInv' || $tipo == 'PrIng') {
+                
+                // Validacion: si ya existe proyecto
+                $yaExisteProyecto = Proyecto::where('alumno_rut', $rutAlumno)
                                             ->where('semestre_inicio', $semestreInicio)
                                             ->exists();
 
-            if ($yaExistePractica) {
-                return back()->with('error', 'Error: Este alumno ya tiene una práctica registrada para el semestre ' . $semestreInicio . '.');
-            }
+                if ($yaExisteProyecto) {
+                    return back()->with('error', 'Error: Este alumno ya tiene un proyecto registrado para el semestre ' . $semestreInicio . '.');
+                }
 
-            // --- LÓGICA PARA PRÁCTICA TUTELADA ---
-            try {
-                PracticaTutelada::create([
+                $profesorGuiaRut = (int)$request->input('profesor_guia_rut');
+                $profesorComisionRut = (int)$request->input('profesor_comision_rut');
+                
+                $profesorCoguiaRut = null;
+                if ($request->input('toggle_coguia') == 'si') {
+                    $profesorCoguiaRut = (int)$request->input('profesor_coguia_rut');
+                    if ($profesorCoguiaRut === 0) {
+                        $profesorCoguiaRut = null;
+                    }
+                }
+
+                // Validaciones de profesores
+                if ($profesorGuiaRut === $profesorComisionRut) {
+                    return back()->with('error', 'Error: El Profesor Guía y el Profesor de Comisión no pueden ser la misma persona.');
+                }
+
+                if ($profesorCoguiaRut !== null) {
+                    if ($profesorCoguiaRut === $profesorGuiaRut) {
+                        return back()->with('error', 'Error: El Profesor Co-Guía no puede ser el mismo que el Profesor Guía.');
+                    }
+                    if ($profesorCoguiaRut === $profesorComisionRut) {
+                        return back()->with('error', 'Error: El Profesor Co-Guía no puede ser el mismo que el Profesor de Comisión.');
+                    }
+                }
+
+                // Validador externo
+                $validacionProyecto = HabilProfValidator::validarProyecto($request->all());
+
+                if (!$validacionProyecto['ok']) {
+                    return back()->with('error', 'Los datos ingresados no son válidos')->withInput();
+                }
+                
+                // Limite de proyectos
+                $proyectosActivosGuia = Proyecto::where('profesor_guia_rut', $profesorGuiaRut)
+                                                ->where('semestre_inicio', $semestreInicio)
+                                                ->whereNull('nota_final')
+                                                ->count();
+
+                if ($proyectosActivosGuia >= 5) {
+                    return back()->with('error', 'Error: Límite de asignaciones alcanzado.');
+                }
+
+                // Crear Proyecto
+                $nuevoProyecto = Proyecto::create([
+                    'alumno_rut' => $rutAlumno,
+                    'semestre_inicio' => $semestreInicio,
+                    'tipo_proyecto' => $tipo,
+                    'descripcion' => $request->input('descripcion'),
+                    'fecha_inicio' => Carbon::now(),
+                    'nota_final' => NULL, 
+                    'titulo' => $request->input('titulo'),
+                    'profesor_guia_rut' => $profesorGuiaRut,
+                    'profesor_comision_rut' => $profesorComisionRut,
+                    'profesor_coguia_rut' => $profesorCoguiaRut
+                ]);
+
+            } elseif ($tipo == 'PrTut') {
+                
+                $profesorTutorRut = (int)$request->input('profesor_guia_rut');
+                
+                // Validacin: si ya existe practica
+                $yaExistePractica = PracticaTutelada::where('alumno_rut', $rutAlumno)
+                                                ->where('semestre_inicio', $semestreInicio)
+                                                ->exists();
+
+                if ($yaExistePractica) {
+                    return back()->with('error', 'Error: Este alumno ya tiene una práctica registrada para el semestre ' . $semestreInicio . '.');
+                }
+                
+                $dataToValidate = [
+                    'nombre_empresa'       => $request->input('nombre-empresa'),
+                    'nombre_supervisor'    => $request->input('nombre_supervisor'),
+                    'descripcion_practica' => $request->input('descripcion_practica'),
+                    'profesor_tutor_rut'   => $profesorTutorRut,
+                    'semestre_inicio'      => $semestreInicio,
+                ];
+
+                $validationResult = HabilProfValidator::validarPracticaTutelada($dataToValidate);
+
+                if (!$validationResult['ok']) {
+                    return back()->with('error', 'Los datos ingresados no son válidos')->withInput();
+                }
+                
+                $practicasActivosGuia = PracticaTutelada::where('profesor_tutor_rut', $profesorTutorRut)
+                                                        ->where('semestre_inicio', $semestreInicio)
+                                                        ->whereNull('nota_final')
+                                                        ->count();
+
+                if ($practicasActivosGuia >= 5) {
+                    return back()->with('error', 'Error: Límite de asignaciones alcanzado.');
+                }
+
+                // Crear Practica
+                $nuevaPractica = PracticaTutelada::create([
                     'alumno_rut' => $rutAlumno,
                     'semestre_inicio' => $semestreInicio,
                     'nombre_empresa' => $request->input('nombre-empresa'),
@@ -102,17 +136,17 @@ class HabilitacionController extends Controller
                     'fecha_inicio' => Carbon::now(),
                     'nota_final' => NULL
                 ]);
-                Log::info('Intento de registro de Práctica Tutelada (lógica comentada en HabilitacionController).');
-                // Descomenta lo anterior cuando tengas el modelo PracticaTutelada listo.
-
-            } catch (\Exception $e) {
-                Log::error('Error al guardar Práctica: ' . $e->getMessage());
-                return back()->with('error', 'Error real: ' . $e->getMessage());
             }
-        }
 
-        // --- 5. REDIRIGIR ---
-        // Si todo salió bien, redirige de vuelta al formulario con un mensaje de éxito.
-        return redirect('/formulario')->with('success', 'Habilitación registrada con éxito.');
+            // Redireccion final con los datos creados
+            return redirect('/formulario')
+                    ->with('success', 'Habilitación registrada con éxito.')
+                    ->with('proyecto_creado', $nuevoProyecto)
+                    ->with('practica_creada', $nuevaPractica);
+
+        } catch (\Exception $e) {
+            // Cualquier error general sin especificar tipo
+            return back()->with('error', 'Ocurrió un error al guardar: ' . $e->getMessage())->withInput();
+        }
     }
 }
