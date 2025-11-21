@@ -16,23 +16,21 @@ class SyncSimulacion extends Command
         $this->info('Iniciando sincronización desde BD simulada...');
 
         try {
-            // --- 1. Sincroniza alumnos y profesores ---
+            /*incroniza alumnos y profesores */
             $al = $service->syncAlumnos();
             $pr = $service->syncProfesores();
             $this->info("Alumnos sincronizados: {$al}");
             $this->info("Profesores sincronizados: {$pr}");
 
-            // --- 2. NUEVO: Actualiza habilitaciones existentes ---
+            /*Actualiza habilitaciones existentes*/
             $hab = $service->syncHabilitacionesCampos();
             $this->info("Habilitaciones actualizadas → Proyectos: {$hab['proyectos']}, Prácticas: {$hab['practicas']}");
 
-            // --- 3. Notas (si activas la opción) ---
             if ($this->option('with-notas')) {
                 $no = $service->syncNotas();
                 $this->info("Notas procesadas: {$no}");
             }
 
-            // --- 4. Final ---
             $this->info('Sincronización OK');
             Log::info('[simulacion:sync] OK', [
                 'alumnos' => $al,

@@ -38,7 +38,6 @@ class HabilProfValidator
     public static function reglaNotaFinal(): array
     {
         return ['nullable','regex:/^(?:[1-6]\.[0-9]|7\.0)$/'];
-        // (Opcional) además del regex, abajo validamos rango numérico exacto
     }
 
     // R1.7 y R1.8: Fecha DD/MM/AAAA con AAAA∈[2025,2045]
@@ -54,8 +53,8 @@ class HabilProfValidator
         $regex = '/^[A-Za-zñÑáéíóúÁÉÍÓÚ\s]+$/u'; 
 
         return [
-            'required', 
-            'string', 
+            'required',
+            'string',
             "max:{$max}",
             'regex:' . $regex
         ];
@@ -134,9 +133,9 @@ class HabilProfValidator
     public static function validarPracticaTutelada(array $d): array
     {
         $v = Validator::make($d, [
-            'nombre_empresa'       => self::reglaTextoSoloLetras(50), 
-            'nombre_supervisor'    => self::reglaTextoSoloLetras(100), 
-            'descripcion_practica' => self::reglaDescripcion(), 
+            'nombre_empresa'       => self::reglaTextoSoloLetras(50),
+            'nombre_supervisor'    => self::reglaTextoSoloLetras(100),
+            'descripcion_practica' => self::reglaDescripcion(),
             'profesor_tutor_rut'   => self::reglaRut(),
             'semestre_inicio'      => self::reglaSemestre(),
         ]);

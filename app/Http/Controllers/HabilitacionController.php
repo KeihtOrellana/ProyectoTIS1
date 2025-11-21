@@ -145,7 +145,6 @@ class HabilitacionController extends Controller
                     ->with('practica_creada', $nuevaPractica);
 
         } catch (\Exception $e) {
-            // Cualquier error general sin especificar tipo
             return back()->with('error', 'Ocurrió un error al guardar: ' . $e->getMessage())->withInput();
         }
     }

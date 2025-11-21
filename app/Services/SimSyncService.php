@@ -152,7 +152,7 @@ class SimSyncService
                     // Clave correcta: id_habilitacion (RUT + AAAAY)
                     $idHab = $this->idHab((int)$n->rut_alumno, (string)$n->semestre_inscrito);
 
-                    // ¿Existe en proyectos o en práctica?
+                    // aca busca si existe en proyectos o en practicas
                     $actualProy = Proyecto::query()
                         ->select('id_habilitacion','nota_final','fecha_nota')
                         ->where('id_habilitacion', $idHab)
@@ -224,12 +224,12 @@ class SimSyncService
         $updProy = 0;
         $updPrac = 0;
 
-        // --- PROYECTOS ---
+        /* PROYECTOS */
         Proyecto::query()->orderBy('alumno_rut')->chunk(300, function ($chunk) use (&$updProy) {
             foreach ($chunk as $p) {
                 $changed = false;
 
-                // 1) Asegurar semestre_inicio: si viene vacío, lo inferimos desde id_habilitacion
+                //Asegurar semestre_inicio: si viene vacío, lo inferimos desde id_habilitacion
                 $sem = $p->semestre_inicio;
                 if (empty($sem)) {
                     $tail = substr((string)$p->id_habilitacion, -5); // AAAAY
@@ -251,7 +251,7 @@ class SimSyncService
                     }
                 }
 
-                // 2) Buscar nota en sim_notas del MISMO semestre
+                //Buscar nota en sim_notas del mismo semestre
                 $simNota = SimNota::where('rut_alumno', $p->alumno_rut)
                             ->where('semestre_inscrito', $sem)
                             ->orderByDesc('fecha_nota')
@@ -260,7 +260,7 @@ class SimSyncService
                 $nota = $simNota->nota_final ?? null;
                 $fNota = $simNota->fecha_nota ?? null;
 
-                // 3) Validación (tolerar fecha_inicio nula para el payload)
+                // Validación (tolerar fecha_inicio nula para el payload)
                 $payload = [
                     'Semestre_Inicio' => (string)$sem,
                     'Nota_Final'      => $nota,
@@ -275,7 +275,7 @@ class SimSyncService
                     continue;
                 }
 
-                // 4) Reglas de transición para nota/fecha
+                //Reglas de transición para nota/fecha
                 $notaActual  = $p->nota_final;
                 $fechaActual = $p->fecha_nota;
                 $notaNueva   = $nota;
@@ -303,7 +303,7 @@ class SimSyncService
             foreach ($chunk as $pt) {
                 $changed = false;
 
-                // 1) Asegurar semestre_inicio desde id_habilitacion si viene vacío
+                // Asegurar semestre_inicio desde id_habilitacion si viene vacío
                 $sem = $pt->semestre_inicio;
                 if (empty($sem)) {
                     $tail = substr((string)$pt->id_habilitacion, -5); // AAAAY
@@ -325,7 +325,7 @@ class SimSyncService
                     }
                 }
 
-                // 2) Buscar nota en sim_notas del MISMO semestre
+                // buscar nota en sim_notas del mismo semestre
                 $simNota = SimNota::where('rut_alumno', $pt->alumno_rut)
                             ->where('semestre_inscrito', $sem)
                             ->orderByDesc('fecha_nota')
@@ -334,7 +334,7 @@ class SimSyncService
                 $nota = $simNota->nota_final ?? null;
                 $fNota = $simNota->fecha_nota ?? null;
 
-                // 3) Validación (tolerando fecha_inicio nula)
+                // Validación (tolerando fecha_inicio nula)
                 $payload = [
                     'Semestre_Inicio' => (string)$sem,
                     'Nota_Final'      => $nota,
@@ -348,7 +348,7 @@ class SimSyncService
                     continue;
                 }
 
-                // 4) Reglas de transición para nota/fecha
+                //Reglas de transición para nota/fecha
                 $notaActual  = $pt->nota_final;
                 $fechaActual = $pt->fecha_nota;
                 $notaNueva   = $nota;

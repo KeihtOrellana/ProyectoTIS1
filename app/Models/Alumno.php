@@ -11,7 +11,6 @@ class Alumno extends Model
 
     /**
      * La clave primaria asociada con la tabla.
-     *
      * @var string
      */
     protected $primaryKey = 'rut_alumno';
