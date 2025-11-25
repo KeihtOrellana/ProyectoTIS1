@@ -34,7 +34,7 @@
                             </div>
 
                             <div class="col-md-4">
-                                <a href="/listado" class="menu-button" id="btn-listado">
+                                <a href="{{ route('habilitacion.listado') }}" class="menu-button" id="btn-listado">
                                     <div class="icon-wrapper"><i class="fa-solid fa-table-list"></i></div>
                                     <span>Crear listado</span>
                                 </a>

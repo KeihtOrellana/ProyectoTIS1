@@ -36,6 +36,12 @@ class Profesor extends Model
 
     public function practicasComoTutor()
     {
-        return $this->hasMany(PracticaTutelada::class, 'profesor_tutor_rut', 'rut_profesor');
+       return $this->hasMany(PracticaTutelada::class, 'profesor_tutor_rut', 'rut_profesor');
     }
+    public function proyectosCoguia()
+    {
+        return $this->hasMany(Proyecto::class, 'profesor_coguia_rut', 'rut_profesor');
+    }
+
+    
 }

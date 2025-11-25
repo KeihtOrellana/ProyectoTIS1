@@ -7,6 +7,8 @@ use App\Models\Proyecto;
 use App\Models\PracticaTutelada; 
 use App\Support\HabilProfValidator;
 use Carbon\Carbon; 
+use App\Models\Profesor;
+use App\Models\Alumno;
 
 class HabilitacionController extends Controller
 {
@@ -139,5 +141,81 @@ class HabilitacionController extends Controller
             // Cualquier error general sin especificar tipo
             return back()->with('error', 'Ocurrió un error al guardar: ' . $e->getMessage())->withInput();
         }
+    }
+    // --- FUNCIONALIDAD R4: LISTADOS VARIOS ---
+
+    /**
+     * R4.6: Muestra la vista para seleccionar el tipo de listado.
+     */
+    public function listado()
+    {
+        return view('listado');
+    }
+
+    /**
+     * R4.8 y R4.9: Genera el reporte según el tipo seleccionado.
+     */
+    public function generarReporte(Request $request)
+    {
+        // R4.1: Validación de entrada
+        $request->validate([
+            'tipo_listado' => 'required|string|in:Semestral,Histórico',
+            // R4.7 y R4.2: Validación condicional del semestre
+            'semestre_ano' => 'required_if:tipo_listado,Semestral|nullable|integer|min:2025|max:2045',
+            'semestre_periodo' => 'required_if:tipo_listado,Semestral|nullable|integer|min:1|max:2',
+        ], [
+            'semestre_ano.required_if' => 'Semestre no válido (R4.7)',
+            'semestre_periodo.required_if' => 'Semestre no válido (R4.7)',
+        ]);
+
+        $tipo = $request->tipo_listado;
+        $resultados = [];
+        $semestreBuscado = null;
+
+        // --- R4.8: LISTADO SEMESTRAL ---
+        if ($tipo === 'Semestral') {
+            // Combinar año y periodo (AAAA-Y)
+            $semestreBuscado = $request->semestre_ano . '-' . $request->semestre_periodo;
+
+            // R4.8.1: Buscar en Proyectos
+            $proyectos = Proyecto::with(['alumno', 'profesorGuia', 'profesorComision', 'profesorCoguia'])
+                ->where('semestre_inicio', $semestreBuscado)
+                ->get();
+
+            // R4.8.1: Buscar en Prácticas
+            $practicas = PracticaTutelada::with(['alumno', 'profesorTutor'])
+                ->where('semestre_inicio', $semestreBuscado)
+                ->get();
+
+            // Validar si no hay registros (R4.8.1)
+            if ($proyectos->isEmpty() && $practicas->isEmpty()) {
+                return back()->withErrors(['error' => 'No se han encontrado registros para este semestre']);
+            }
+
+            // Unificar resultados
+            $resultados = [
+                'proyectos' => $proyectos,
+                'practicas' => $practicas
+            ];
+        }
+
+        // --- R4.9: LISTADO HISTÓRICO ---
+        elseif ($tipo === 'Histórico') {
+            // R4.9.1: Buscar profesores con sus relaciones
+            // Usamos 'with' para optimizar (Eager Loading)
+            $profesores = Profesor::with([
+                'proyectosComoGuia.alumno',
+                'proyectosComoComision.alumno',
+                'proyectosCoguia.alumno',
+                'practicasComoTutor.alumno'
+            ])
+            ->orderBy('nombre_profesor')
+            ->get();
+
+            $resultados = $profesores;
+        }
+
+        // R4.10: Desplegar listado
+        return view('reporte', compact('tipo', 'resultados', 'semestreBuscado'));
     }
 }

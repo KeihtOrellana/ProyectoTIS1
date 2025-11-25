@@ -28,3 +28,11 @@ Route::get('/formulario', function () {
 });
 
 Route::post('/registrar-habilitacion', [HabilitacionController::class, 'store']);
+
+// --- RUTAS DE LISTADOS (R4) ---
+
+// R4.6: Mostrar la vista de selección de listado
+Route::get('/listado', [HabilitacionController::class, 'listado'])->name('habilitacion.listado');
+
+// R4.8 y R4.9: Procesar la búsqueda y mostrar resultados
+Route::post('/generar-listado', [HabilitacionController::class, 'generarReporte'])->name('habilitacion.reporte');
