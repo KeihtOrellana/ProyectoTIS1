@@ -29,6 +29,8 @@ Route::get('/formulario', function () {
 
 Route::post('/registrar-habilitacion', [HabilitacionController::class, 'store']);
 
+Route::view('/editar_eliminar', 'editar_eliminar');
+
 // --- RUTAS DE LISTADOS (R4) ---
 
 // R4.6: Mostrar la vista de selección de listado
