@@ -27,7 +27,7 @@
                             </div>
 
                             <div class="col-md-4">
-                                <a href="/editar" class="menu-button" id="btn-editar">
+                                <a href="/editar_eliminar" class="menu-button" id="btn-editar">
                                     <div class="icon-wrapper"><i class="fa-solid fa-file-pen"></i></div>
                                     <span>Editar datos</span>
                                 </a>
