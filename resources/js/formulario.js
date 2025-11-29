@@ -51,6 +51,74 @@ document.addEventListener('DOMContentLoaded', function () {
     const descripcionPractica = document.getElementById('descripcion-practica');
     const descripcionProyecto = document.getElementById('descripcion');
 
+        // ================== NOTA FINAL DESDE SIM_NOTAS ==================
+    const selectAlumno      = document.getElementById('select-alumno');
+    const inputSemAno       = document.getElementById('semestre-ano');
+    const inputSemPeriodo   = document.getElementById('semestre-periodo');
+    const inputNotaFinal    = document.getElementById('nota-final');
+
+    // Cache para no pedir las notas muchas veces
+    let cacheNotas = null;
+
+    async function actualizarNotaFinal() {
+        if (!selectAlumno || !inputSemAno || !inputSemPeriodo || !inputNotaFinal) return;
+
+        const rut    = selectAlumno.value;
+        const ano    = inputSemAno.value;
+        const periodo = inputSemPeriodo.value;
+        const tipo   = tipoHabilitacion ? tipoHabilitacion.value : null;
+
+        // Si falta algún dato (excepto la nota), limpiamos y no buscamos nada
+        if (!rut || !ano || !periodo || !tipo) {
+            inputNotaFinal.value = '';
+            return;
+        }
+
+        try {
+            // Cargar notas simuladas solo la primera vez
+            if (!cacheNotas) {
+                const resp = await fetch('/simulacion/notas');
+                if (!resp.ok) throw new Error('No se pudieron obtener las notas simuladas');
+                cacheNotas = await resp.json();
+            }
+
+            const semestre = `${ano}-${periodo}`; // formato AAAA-Y
+
+            // Buscar nota para ese alumno y semestre
+            const registro = cacheNotas.find(n =>
+                String(n.rut_alumno) === String(rut) &&
+                String(n.semestre_inscrito) === semestre
+            );
+
+            if (registro && registro.nota_final !== null) {
+                inputNotaFinal.value = registro.nota_final;
+            } else {
+                // No hay nota → dejar vacío
+                inputNotaFinal.value = '';
+            }
+        } catch (error) {
+            console.error('Error cargando nota simulada:', error);
+            inputNotaFinal.value = '';
+        }
+    }
+
+    // Disparar la actualización cuando cambian los campos relevantes
+    if (selectAlumno) {
+        selectAlumno.addEventListener('change', actualizarNotaFinal);
+    }
+    if (tipoHabilitacion) {
+        tipoHabilitacion.addEventListener('change', actualizarNotaFinal);
+    }
+    if (inputSemAno) {
+        inputSemAno.addEventListener('change', actualizarNotaFinal);
+        inputSemAno.addEventListener('blur', actualizarNotaFinal);
+    }
+    if (inputSemPeriodo) {
+        inputSemPeriodo.addEventListener('change', actualizarNotaFinal);
+        inputSemPeriodo.addEventListener('blur', actualizarNotaFinal);
+    }
+    // ===============================================================
+
 
     // LÓGICA DE MOSTRAR/OCULTAR Y REQUIRED 
     if (tipoHabilitacion) {

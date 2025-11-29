@@ -215,7 +215,7 @@
 
                             <div class="mb-3">
                                 <label for="nota-final" class="form-label fw-bold">Nota Final</label>
-                                <input type="text" class="form-control" id="nota-final" name="nota-final" value="4.0" readonly>
+                                <input type="text" class="form-control" id="nota-final" name="nota-final" value="" readonly>
                             </div>
 
                             <div class="mt-4">

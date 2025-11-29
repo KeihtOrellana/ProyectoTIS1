@@ -4,6 +4,12 @@ use Illuminate\Support\Facades\Route;
 use App\Models\Profesor;
 use App\Models\Alumno;
 use App\Http\Controllers\HabilitacionController;
+use App\Http\Controllers\SimulacionUCSCController;
+
+Route::get(
+    '/simulacion/notas',
+    [SimulacionUCSCController::class, 'obtenerNotas']
+)->name('simulacion.notas');
 
 Route::get('/', function () {
     return view('indexPrincipal');
