@@ -154,11 +154,11 @@
                     </select>
                 </div>
             </div>
-            <!--  -->
-            <div class="alert alert-info">Ordenado por Profesor y Semestre (R4.9)</div>
+            <div class="alert alert-info">Ordenado por Profesor y Semestre</div>
             
             @foreach($resultados as $profe)
-                @if($profe->proyectosComoGuia->isNotEmpty() || $profe->proyectosComoComision->isNotEmpty() || $profe->practicasComoTutor->isNotEmpty())
+                @if($profe->proyectosComoGuia->isNotEmpty() || $profe->proyectosComoComision->isNotEmpty() || $profe->practicasComoTutor->isNotEmpty() || $profe->proyectosCoguia->isNotEmpty())
+                     <!-- Tarjeta por profesor -->
                     
                     <div class="card mb-4 card-historico">
                         <div class="card-header fw-bold">

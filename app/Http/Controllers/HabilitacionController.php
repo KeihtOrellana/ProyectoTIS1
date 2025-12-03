@@ -170,10 +170,10 @@ class HabilitacionController extends Controller
            
             $reglas['semestre_completo'] = HabilProfValidator::reglaSemestre();
         }
-        // 4. Ejecutamos la validación
+
         $request->validate($reglas, [
-            'semestre_completo.required' => 'Para el listado Semestral debe ingresar año y periodo (R4.7).',
-            'semestre_completo.regex'    => 'Semestre no válido (Debe ser AAAA-Y entre 2025-2045) (R4.2).',
+            'semestre_completo.required' => 'Semestre no Valido.',
+            'semestre_completo.regex'    => 'Semestre no Valido.',
         ]);
 
         $tipo = $request->tipo_listado;
