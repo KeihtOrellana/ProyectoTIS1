@@ -158,14 +158,22 @@ class HabilitacionController extends Controller
     public function generarReporte(Request $request)
     {
         // R4.1: Validación de entrada
-        $request->validate([
+        if ($request->has('semestre_ano') && $request->has('semestre_periodo')) {
+            $request->merge([
+                'semestre_completo' => $request->semestre_ano . '-' . $request->semestre_periodo
+            ]);
+        }
+        $reglas = [
             'tipo_listado' => 'required|string|in:Semestral,Histórico',
-            // R4.7 y R4.2: Validación condicional del semestre
-            'semestre_ano' => 'required_if:tipo_listado,Semestral|nullable|integer|min:2025|max:2045',
-            'semestre_periodo' => 'required_if:tipo_listado,Semestral|nullable|integer|min:1|max:2',
-        ], [
-            'semestre_ano.required_if' => 'Semestre no válido (R4.7)',
-            'semestre_periodo.required_if' => 'Semestre no válido (R4.7)',
+        ];
+        if ($request->input('tipo_listado') === 'Semestral') {
+           
+            $reglas['semestre_completo'] = HabilProfValidator::reglaSemestre();
+        }
+
+        $request->validate($reglas, [
+            'semestre_completo.required' => 'Semestre no Valido.',
+            'semestre_completo.regex'    => 'Semestre no Valido.',
         ]);
 
         $tipo = $request->tipo_listado;

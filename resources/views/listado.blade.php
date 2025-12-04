@@ -42,7 +42,7 @@
                         </div>
 
                         <div id="campo-semestre" class="mb-4 d-none">
-                            <label class="form-label fw-bold">Ingrese Semestre (R4.7)</label>
+                            <label class="form-label fw-bold">Ingrese Semestre </label>
                             <div class="input-group">
                                 <input type="number" name="semestre_ano" class="form-control" placeholder="AAAA (2025-2045)" min="2025" max="2045">
                                 <span class="input-group-text">-</span>
