@@ -104,7 +104,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     const coincideSemestre = !semestreQ || valorSemestre.includes(semestreQ);
 
                     // --- filtro por rol (guía, co-guía, comisión, tutor) ---
-                    const coincideRol = !rolQ || valorRol.includes(rolQ);
+                    const coincideRol = !rolQ || valorRol === rolQ;
 
                     const visible = coincideTexto && coincideSemestre && coincideRol;
                     fila.style.display = visible ? '' : 'none';
