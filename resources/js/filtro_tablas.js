@@ -95,8 +95,7 @@ document.addEventListener('DOMContentLoaded', function () {
                             coincideTexto = valorProfesor.includes(texto);
                         } else { // 'todos'
                             coincideTexto =
-                                valorAlumno.includes(texto) ||
-                                valorProfesor.includes(texto);
+                                valorProfesor.includes(texto) || valorAlumno.includes(texto);
                         }
                     }
 
